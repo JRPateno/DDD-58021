@@ -30,6 +30,8 @@ def add_student():
         mydb.commit()
         messagebox.showinfo("Success", "Data saved successfully!")
         clear_entries()
+        close_window()
+        add_student()
 
     def clear_entries():
         sch_entry.delete(0, tk.END)
@@ -114,6 +116,12 @@ def view_students():
                 var3 = age_entry.get()
                 var4 = email_entry.get()
                 var5 = phone_entry.get()
+
+                mycursor.execute("SELECT * FROM students_info WHERE Student_no = %s", (var1,))
+                existing_record = mycursor.fetchone()
+                if existing_record and existing_record[0] != student_no:
+                    messagebox.showerror("Error", "Student number already exists!")
+                    return
 
                 mycursor.execute(
                     "UPDATE students_info SET Student_no = %s, Name = %s, Age = %s, Email = %s, Phone = %s WHERE Student_no = %s",
